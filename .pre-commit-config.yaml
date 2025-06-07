@@ -1,0 +1,32 @@
+# (C) 2025 Alexei Znamensky
+# Licensed under the MIT License. See LICENSES/MIT.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: MIT
+
+repos:
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.15.0
+    hooks:
+      - id: reorder-python-imports
+        args: ["--application-directories", "src"]
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.2.0
+    hooks:
+      - id: flake8
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: fix-byte-order-marker
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+  # - repo: https://github.com/fsfe/reuse-tool
+  #   rev: v1.1.0
+  #   hooks:
+  #     - id: reuse
