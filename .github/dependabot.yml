@@ -1,0 +1,22 @@
+# (C) 2025 Alexei Znamensky
+# Licensed under the GPL-3.0-or-later license. See LICENSES/GPL-3.0-or-later.txt for details.
+# SPDX-FileCopyrightText: 2025 Alexei Znamensky
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    rebase-strategy: auto
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

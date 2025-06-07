@@ -49,7 +49,7 @@ Screenwriter reads commands from a file specified by the `PEXP_FILE` environment
 
 ## License
 
-MIT License. See `LICENSES/MIT.txt` for details.
+GPL-3.0-or-later License. See `LICENSES/GPL-3.0-or-later.txt` for details.
 
 ## Author
 
