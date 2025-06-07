@@ -1,0 +1,91 @@
+[tool.poetry]
+name = "screenwriter"
+version = "0.0.1"
+description = "Script and automate interactive terminal sessions for generating asciinema .cast files and reproducible demos."
+authors = ["Alexei Znamensky <russoz@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/russoz/screenwriter"
+repository = "https://github.com/russoz/screenwriter"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Utilities",
+    "Topic :: Terminals",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Testing Tools"
+]
+keywords = [ "asciinema", "cast", "terminal", "automation", "demo", "gif", "documentation" ]
+packages = [
+    { include = "screenwriter", from = "src" }
+]
+
+[tool.poetry.scripts]
+screenwriter = "screenwriter.__main__:main"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/russoz/screenwriter/issues"
+"Source Code" = "https://github.com/russoz/screenwriter"
+"Documentation" = "https://screenwriter.readthedocs.io/en/latest/index.html"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+argcomplete = "^3.5.3"
+pexpect = "^4.9.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.3.1,<9.0.0"
+pytest-mock = "^3.10.0"
+pytest-cov = "^6.1.1"
+pytest-skip-slow = "^0.0.5"
+virtualenv-pyenv = "*"
+pylint = ">=2.17.4,<4.0.0"
+flake8 = ">=6,<8"
+pre-commit = "^4.2.0"
+python-semantic-release = ">=9.21.1,<11.0.0"
+junit-xml = "^1.9"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^8.2.3"
+furo = "^2024.8.6"
+myst-parser = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variables = [
+    "screenwriter/__init__.py:__version__",
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+branch = "main"
+changelog = { file = "CHANGELOG.md", mode = "init" }
+build_command = "poetry build"
+dist_path = "dist/"
+upload_to_pypi = true
+upload_to_release = true
+commit_parser = "conventional"
+major_on_zero = true
+tag_format = "v{version}"
+parse_version_from_tag = true
+version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+repository = "russoz/screenwriter"
