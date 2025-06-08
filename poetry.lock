@@ -1178,24 +1178,6 @@ pytest = ">=6.2.5"
 dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
-name = "pytest-skip-slow"
-version = "0.0.5"
-description = "A pytest plugin to skip `@pytest.mark.slow` tests by default."
-optional = false
-python-versions = ">=3.7"
-groups = ["dev"]
-files = [
-    {file = "pytest-skip-slow-0.0.5.tar.gz", hash = "sha256:655ea5c748c72947e0d302334e7fa8ef99929257a2a2bc928f630ddb5a161d88"},
-    {file = "pytest_skip_slow-0.0.5-py3-none-any.whl", hash = "sha256:e2f6401d6ed0db3be1402622a7b24f7df14f61ebd26feda808a0d45433d4d474"},
-]
-
-[package.dependencies]
-pytest = ">=6.2.0"
-
-[package.extras]
-test = ["tox"]
-
-[[package]]
 name = "python-gitlab"
 version = "5.6.0"
 description = "The python wrapper for the GitLab REST and GraphQL APIs."
@@ -1785,4 +1767,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "714e582a6f7cb6c690e574949610d537a067658dc8a41ba229119c7122f083cc"
+content-hash = "c37266179c875b2a69e0a624a3556b279241aa5d5b986db84d998494e0903dfe"
