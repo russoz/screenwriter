@@ -19,6 +19,12 @@ from . import __version__
 class ScreenwriterRunner:
     """Handles automation of terminal sessions with configurable parameters."""
 
+    VALID_COMMANDS = ["SEND", "EXPECT", "ENTER", "DELAY"]
+
+    command_re = re.compile(
+        rf'^\s*(?P<cmd>{"|".join(VALID_COMMANDS)})\((?P<param>.*)\)\s*(?:#.*)?$'
+    )
+
     def __init__(
         self,
         typing_delay_range=(0.03, 0.12),
@@ -54,13 +60,40 @@ class ScreenwriterRunner:
 
     def process_line(self, child, line):
         """Process a single script line."""
-        if line.startswith("SEND(") and line.endswith(")"):
-            cmd = line[5:-1]
-            self.human_type(child, f"{cmd}\r")
-        elif line.startswith("EXPECT(") and line.endswith(")"):
-            pat = line[7:-1]
-            # Use regex for matching
-            child.expect(re.escape(pat))
+        match = self.command_re.match(line)
+        if not match:
+            print(f"Error: Invalid command format: '{line}'", file=sys.stderr)
+            sys.exit(1)
+
+        cmd, param = match.group("cmd"), match.group("param").strip()
+
+        match cmd:
+            case "SEND":
+                self.human_type(child, param)
+            case "EXPECT":
+                child.expect(re.escape(param))
+            case "ENTER":
+                try:
+                    count = int(param) if param else 1
+                    for _ in range(count):
+                        child.send("\r")
+                        print("\r", end="", flush=True)
+                except ValueError:
+                    print(
+                        f"Error: ENTER() requires an integer parameter, got '{param}'",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+            case "DELAY":
+                try:
+                    delay = float(param)
+                    time.sleep(delay)
+                except ValueError:
+                    print(
+                        f"Error: DELAY() requires a numeric parameter, got '{param}'",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
 
     def process_file(self, input_file):
         """Process the script file line by line."""

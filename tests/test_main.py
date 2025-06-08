@@ -7,6 +7,7 @@ import os
 import pytest
 
 from screenwriter.__main__ import main
+from screenwriter.__main__ import ScreenwriterRunner
 
 
 def test_main_with_version_argument(mocker):
@@ -94,7 +95,7 @@ def test_main_positional_arg_overrides_env_var(mocker, tmp_path):
     main()
 
     # Should have called human_type with command from arg_file
-    mock_human_type.assert_called_with(mock_child, "echo from_arg\r")
+    mock_human_type.assert_called_with(mock_child, "echo from_arg")
 
 
 def test_main_file_not_found(mocker):
@@ -150,8 +151,8 @@ def test_main_processes_send_and_expect(mocker, tmp_path):
 
     # Should have called human_type twice for SEND commands
     assert mock_human_type.call_count == 2
-    mock_human_type.assert_any_call(mock_child, "echo hello\r")
-    mock_human_type.assert_any_call(mock_child, "ls\r")
+    mock_human_type.assert_any_call(mock_child, "echo hello")
+    mock_human_type.assert_any_call(mock_child, "ls")
 
     # Should have called expect twice: once for prompt setup, once for EXPECT command
     assert mock_child.expect.call_count == 2
@@ -188,9 +189,106 @@ EXPECT(test)
     main()
 
     # Should only process the SEND and EXPECT commands, not comments
-    mock_human_type.assert_called_once_with(mock_child, "echo test\r")
+    mock_human_type.assert_called_once_with(mock_child, "echo test")
 
     # Should have called expect twice: once for prompt setup, once for EXPECT command
     assert mock_child.expect.call_count == 2
     mock_child.expect.assert_any_call(r"\$ ")  # Initial prompt setup
     mock_child.expect.assert_any_call("test")  # EXPECT command
+
+
+def test_main_enter_command(mocker, tmp_path):
+    """Test that main correctly processes ENTER command."""
+    test_file = tmp_path / "enter.scene"
+    test_file.write_text("SEND(echo hello)\nENTER(2)\nSEND(ls)\n")
+
+    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_child = mocker.Mock()
+    mock_spawn.return_value = mock_child
+    mock_child.expect.return_value = None
+
+    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    main()
+
+    # Should have called send with \r twice for ENTER(2)
+    assert mock_child.send.call_count >= 2  # At least 2 calls for ENTER(2)
+    # Check for the \r calls specifically
+    enter_calls = [
+        call for call in mock_child.send.call_args_list if call[0][0] == "\r"
+    ]
+    assert len(enter_calls) == 2
+
+
+def test_main_delay_command(mocker, tmp_path):
+    """Test that main correctly processes DELAY command."""
+    test_file = tmp_path / "delay.scene"
+    test_file.write_text("SEND(echo hello)\nDELAY(0.5)\nSEND(ls)\n")
+
+    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_sleep = mocker.patch("time.sleep")
+    mock_child = mocker.Mock()
+    mock_spawn.return_value = mock_child
+    mock_child.expect.return_value = None
+
+    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    main()
+
+    # Should have called time.sleep with 0.5
+    mock_sleep.assert_any_call(0.5)
+
+
+def test_main_enter_invalid_parameter(mocker, tmp_path):
+    """Test that main handles invalid ENTER parameter."""
+    test_file = tmp_path / "invalid_enter.scene"
+    test_file.write_text("ENTER(not_a_number)\n")
+
+    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    assert exc_info.value.code == 1
+
+
+def test_main_delay_invalid_parameter(mocker, tmp_path):
+    """Test that main handles invalid DELAY parameter."""
+    test_file = tmp_path / "invalid_delay.scene"
+    test_file.write_text("DELAY(not_a_number)\n")
+
+    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    assert exc_info.value.code == 1
+
+
+def test_main_enter_optional_parameter(mocker, tmp_path):
+    """Test that main correctly processes ENTER command with optional parameter."""
+    test_file = tmp_path / "enter_optional.scene"
+    test_file.write_text("SEND(echo hello)\nENTER()\nSEND(ls)\n")
+
+    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_child = mocker.Mock()
+    mock_spawn.return_value = mock_child
+    mock_child.expect.return_value = None
+
+    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    main()
+
+    # Should have called send with \r once for ENTER() (default 1)
+    enter_calls = [
+        call for call in mock_child.send.call_args_list if call[0][0] == "\r"
+    ]
+    assert len(enter_calls) == 1
+
+
+def test_screenwriter_runner_enter_optional(mocker):
+    """Test that ScreenwriterRunner processes ENTER() with optional parameter correctly."""
+    mock_child = mocker.Mock()
+    runner = ScreenwriterRunner()
+
+    # Test ENTER() with no parameter (should default to 1)
+    runner.process_line(mock_child, "ENTER()")
+
+    # Should have called send with \r once
+    enter_calls = [
+        call for call in mock_child.send.call_args_list if call[0][0] == "\r"
+    ]
+    assert len(enter_calls) == 1

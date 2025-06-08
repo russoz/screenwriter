@@ -12,9 +12,12 @@ def test_session(tmp_path):
     script_file = tmp_path / "test_script.scene"
     script_file.write_text(
         "SEND(echo 'Hello from screenwriter!')\n"
+        "ENTER()\n"
         "EXPECT(Hello from screenwriter!)\n"
         "SEND(date)\n"
+        "ENTER()\n"
         "SEND(echo 'Test complete')\n"
+        "ENTER()\n"
         "EXPECT(Test complete)\n"
     )
 
@@ -89,7 +92,11 @@ def test_playback(tmp_path):
     # Create a simple script
     script_file = tmp_path / "playback_test.scene"
     script_file.write_text(
-        "SEND(echo 'Playback test')\n" "EXPECT(Playback test)\n" "SEND(whoami)\n"
+        "SEND(echo 'Playback test')\n"
+        "ENTER()\n"
+        "EXPECT(Playback test)\n"
+        "SEND(whoami)\n"
+        "ENTER()\n"
     )
 
     cast_file = tmp_path / "playback.cast"
@@ -138,7 +145,9 @@ def test_env_var(tmp_path):
     # Create script file
     script_file = tmp_path / "env_test.scene"
     script_file.write_text(
-        "SEND(echo 'Environment variable test')\n" "EXPECT(Environment variable test)\n"
+        "SEND(echo 'Environment variable test')\n"
+        "ENTER()\n"
+        "EXPECT(Environment variable test)\n"
     )
 
     cast_file = tmp_path / "env_test.cast"
@@ -188,12 +197,18 @@ def test_complex(tmp_path):
     script_file.write_text(
         "# Complex test script\n"
         "SEND(echo 'Starting complex test')\n"
+        "ENTER()\n"
         "EXPECT(Starting complex test)\n"
         "SEND(ls -la /tmp)\n"
+        "ENTER()\n"
+        "DELAY(0.5)\n"
         "SEND(echo 'Current directory:')\n"
+        "ENTER()\n"
         "EXPECT(Current directory:)\n"
         "SEND(pwd)\n"
+        "ENTER()\n"
         "SEND(echo 'Test completed successfully')\n"
+        "ENTER()\n"
         "EXPECT(Test completed successfully)\n"
     )
 
