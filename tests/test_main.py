@@ -35,12 +35,12 @@ def test_main_without_input_file_fails(mocker):
 
 
 def test_main_with_env_var_input_file(mocker, tmp_path):
-    """Test that main uses PEXP_FILE environment variable."""
-    test_file = tmp_path / "test.pexp"
+    """Test that main uses SCENE_FILE environment variable."""
+    test_file = tmp_path / "test.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello)\n")
 
     mocker.patch("sys.argv", ["screenwriter"])
-    mocker.patch.dict(os.environ, {"PEXP_FILE": str(test_file)})
+    mocker.patch.dict(os.environ, {"SCENE_FILE": str(test_file)})
     mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
@@ -58,7 +58,7 @@ def test_main_with_env_var_input_file(mocker, tmp_path):
 
 def test_main_with_positional_argument(mocker, tmp_path):
     """Test that main uses positional argument for input file."""
-    test_file = tmp_path / "test.pexp"
+    test_file = tmp_path / "test.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello)\n")
 
     mocker.patch("sys.argv", ["screenwriter", str(test_file)])
@@ -75,14 +75,14 @@ def test_main_with_positional_argument(mocker, tmp_path):
 
 def test_main_positional_arg_overrides_env_var(mocker, tmp_path):
     """Test that positional argument takes precedence over environment variable."""
-    arg_file = tmp_path / "arg_file.pexp"
+    arg_file = tmp_path / "arg_file.scene"
     arg_file.write_text("SEND(echo from_arg)\nEXPECT(from_arg)\n")
 
-    env_file = tmp_path / "env_file.pexp"
+    env_file = tmp_path / "env_file.scene"
     env_file.write_text("SEND(echo from_env)\nEXPECT(from_env)\n")
 
     mocker.patch("sys.argv", ["screenwriter", str(arg_file)])
-    mocker.patch.dict(os.environ, {"PEXP_FILE": str(env_file)})
+    mocker.patch.dict(os.environ, {"SCENE_FILE": str(env_file)})
     mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
     mock_human_type = mocker.patch(
         "screenwriter.__main__.ScreenwriterRunner.human_type"
@@ -99,7 +99,7 @@ def test_main_positional_arg_overrides_env_var(mocker, tmp_path):
 
 def test_main_file_not_found(mocker):
     """Test that main handles file not found error."""
-    mocker.patch("sys.argv", ["screenwriter", "nonexistent.pexp"])
+    mocker.patch("sys.argv", ["screenwriter", "nonexistent.scene"])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 1
@@ -107,7 +107,7 @@ def test_main_file_not_found(mocker):
 
 def test_main_empty_file_exits_cleanly(mocker, tmp_path):
     """Test that main exits cleanly with empty file."""
-    test_file = tmp_path / "empty.pexp"
+    test_file = tmp_path / "empty.scene"
     test_file.write_text("")  # Empty file
 
     mocker.patch("sys.argv", ["screenwriter", str(test_file)])
@@ -117,7 +117,7 @@ def test_main_empty_file_exits_cleanly(mocker, tmp_path):
 
 def test_main_comments_only_file_exits_cleanly(mocker, tmp_path):
     """Test that main exits cleanly with file containing only comments."""
-    test_file = tmp_path / "comments.pexp"
+    test_file = tmp_path / "comments.scene"
     test_file.write_text("# This is a comment\n# Another comment\n")
 
     mocker.patch("sys.argv", ["screenwriter", str(test_file)])
@@ -127,7 +127,7 @@ def test_main_comments_only_file_exits_cleanly(mocker, tmp_path):
 
 def test_main_processes_send_and_expect(mocker, tmp_path):
     """Test that main correctly processes SEND and EXPECT commands."""
-    test_file = tmp_path / "commands.pexp"
+    test_file = tmp_path / "commands.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello world)\nSEND(ls)\n")
 
     mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
@@ -164,7 +164,7 @@ def test_main_processes_send_and_expect(mocker, tmp_path):
 
 def test_main_filters_comments_and_empty_lines(mocker, tmp_path):
     """Test that main filters out comments and empty lines."""
-    test_file = tmp_path / "mixed.pexp"
+    test_file = tmp_path / "mixed.scene"
     test_file.write_text(
         """
 # This is a comment

@@ -9,7 +9,7 @@ import subprocess
 def test_session(tmp_path):
     """Test that asciinema can record a screenwriter session and produce a valid .cast file."""
     # Create a simple script file
-    script_file = tmp_path / "test_script.pexp"
+    script_file = tmp_path / "test_script.scene"
     script_file.write_text(
         "SEND(echo 'Hello from screenwriter!')\n"
         "EXPECT(Hello from screenwriter!)\n"
@@ -87,7 +87,7 @@ def test_session(tmp_path):
 def test_playback(tmp_path):
     """Test that asciinema can play back a recording created with screenwriter."""
     # Create a simple script
-    script_file = tmp_path / "playback_test.pexp"
+    script_file = tmp_path / "playback_test.scene"
     script_file.write_text(
         "SEND(echo 'Playback test')\n" "EXPECT(Playback test)\n" "SEND(whoami)\n"
     )
@@ -134,9 +134,9 @@ def test_playback(tmp_path):
 
 
 def test_env_var(tmp_path):
-    """Test screenwriter integration using PEXP_FILE environment variable with asciinema."""
+    """Test screenwriter integration using SCENE_FILE environment variable with asciinema."""
     # Create script file
-    script_file = tmp_path / "env_test.pexp"
+    script_file = tmp_path / "env_test.scene"
     script_file.write_text(
         "SEND(echo 'Environment variable test')\n" "EXPECT(Environment variable test)\n"
     )
@@ -156,7 +156,7 @@ def test_env_var(tmp_path):
     import os
 
     env = os.environ.copy()
-    env["PEXP_FILE"] = str(script_file)
+    env["SCENE_FILE"] = str(script_file)
 
     subprocess.run(
         cmd,
@@ -184,7 +184,7 @@ def test_env_var(tmp_path):
 
 def test_complex(tmp_path):
     """Test a more complex screenwriter session with multiple commands and expects."""
-    script_file = tmp_path / "complex_test.pexp"
+    script_file = tmp_path / "complex_test.scene"
     script_file.write_text(
         "# Complex test script\n"
         "SEND(echo 'Starting complex test')\n"

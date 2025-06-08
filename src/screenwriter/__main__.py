@@ -106,16 +106,16 @@ def main():
     parser.add_argument(
         "input_file",
         nargs="?",
-        help="Path to the .pexp script file (can also be set via PEXP_FILE environment variable)",
+        help="Path to the .scene script file (can also be set via SCENE_FILE environment variable)",
     )
 
     args = parser.parse_args()
 
     # Determine input file: command line argument takes precedence over environment variable
-    input_file = args.input_file or os.environ.get("PEXP_FILE")
+    input_file = args.input_file or os.environ.get("SCENE_FILE")
     if not input_file:
         parser.error(
-            "Input file must be specified either as an argument or via PEXP_FILE environment variable"
+            "Input file must be specified either as an argument or via SCENE_FILE environment variable"
         )
 
     # Create runner with default configuration
