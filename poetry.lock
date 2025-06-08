@@ -40,6 +40,18 @@ files = [
 test = ["coverage", "mypy", "pexpect", "ruff", "wheel"]
 
 [[package]]
+name = "asciinema"
+version = "2.4.0"
+description = "Terminal session recorder"
+optional = false
+python-versions = "*"
+groups = ["dev"]
+files = [
+    {file = "asciinema-2.4.0-py3-none-any.whl", hash = "sha256:249ccf108509d643ddaf38979dac48c99e9e251f597173d8553a30d7a6423104"},
+    {file = "asciinema-2.4.0.tar.gz", hash = "sha256:828e04c36ba622a7b8f8f912c8f0c1329538b6c7ed1c0d1b131bbbfe3a221707"},
+]
+
+[[package]]
 name = "astroid"
 version = "3.3.10"
 description = "An abstract syntax tree for Python with inference support."
@@ -1773,4 +1785,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "3015e89412c340f06caa02b170c02a5f2f727131e013dd71fd7185199547df81"
+content-hash = "714e582a6f7cb6c690e574949610d537a067658dc8a41ba229119c7122f083cc"
