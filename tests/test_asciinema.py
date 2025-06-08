@@ -3,10 +3,24 @@
 # SPDX-FileCopyrightText: 2025 Alexei Znamensky
 # SPDX-License-Identifier: GPL-3.0-or-later
 import json
+import os
 import subprocess
 
+import pytest
 
-def test_session(tmp_path):
+
+@pytest.fixture
+def asciinema_preexec(pytestconfig):
+    """
+    Returns os.setsid to silence asciinema output unless verbosity is -vv or higher.
+    Fixture to provide the appropriate preexec_fn for asciinema subprocess calls based on pytest verbosity.
+    """
+    if pytestconfig.option.verbose < 2:  # Default, -q, or -v
+        return os.setsid
+    return None  # -vv or higher
+
+
+def test_session(tmp_path, asciinema_preexec):
     """Test that asciinema can record a screenwriter session and produce a valid .cast file."""
     # Create a simple script file
     script_file = tmp_path / "test_script.scene"
@@ -39,6 +53,7 @@ def test_session(tmp_path):
         cwd=str(tmp_path),
         capture_output=True,
         text=True,
+        preexec_fn=asciinema_preexec,
     )
 
     # Check that asciinema completed successfully
@@ -87,7 +102,7 @@ def test_session(tmp_path):
     ), "Expected output not found in recording"
 
 
-def test_playback(tmp_path):
+def test_playback(tmp_path, asciinema_preexec):
     """Test that asciinema can play back a recording created with screenwriter."""
     # Create a simple script
     script_file = tmp_path / "playback_test.scene"
@@ -116,6 +131,7 @@ def test_playback(tmp_path):
         cwd=str(tmp_path),
         capture_output=True,
         text=True,
+        preexec_fn=asciinema_preexec,
     )
 
     assert record_result.returncode == 0, f"Recording failed: {record_result.stderr}"
@@ -140,7 +156,7 @@ def test_playback(tmp_path):
     # A non-zero return code from termination is expected and ok
 
 
-def test_env_var(tmp_path):
+def test_env_var(tmp_path, asciinema_preexec):
     """Test screenwriter integration using SCENE_FILE environment variable with asciinema."""
     # Create script file
     script_file = tmp_path / "env_test.scene"
@@ -162,18 +178,20 @@ def test_env_var(tmp_path):
         "screenwriter",
     ]
 
-    import os
-
     env = os.environ.copy()
     env["SCENE_FILE"] = str(script_file)
 
-    subprocess.run(
+    result = subprocess.run(
         cmd,
         cwd=str(tmp_path),
         env=env,
         capture_output=True,
         text=True,
+        preexec_fn=asciinema_preexec,
     )
+    assert (
+        result.returncode == 0
+    ), f"asciinema rec (env var test) failed: {result.stderr}"
 
     # Check recording was created
     assert cast_file.exists(), "Cast file was not created with environment variable"
@@ -191,7 +209,7 @@ def test_env_var(tmp_path):
     assert "version" in header
 
 
-def test_complex(tmp_path):
+def test_complex(tmp_path, asciinema_preexec):
     """Test a more complex screenwriter session with multiple commands and expects."""
     script_file = tmp_path / "complex_test.scene"
     script_file.write_text(
@@ -231,6 +249,7 @@ def test_complex(tmp_path):
         cwd=str(tmp_path),
         capture_output=True,
         text=True,
+        preexec_fn=asciinema_preexec,
     )
 
     assert result.returncode == 0, f"Complex test failed: {result.stderr}"
