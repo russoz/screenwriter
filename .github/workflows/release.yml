@@ -10,23 +10,17 @@ permissions: {}  # remove top-level permissions
 on:
   workflow_dispatch:
   # push:
-  #   tags:
-  #     - "v[0-9]+.[0-9]+.[0-9]+*"
   #   branches: [main]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     concurrency: release
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
 
     steps:
     - uses: actions/checkout@v4
       with:
+        persist-credentials: false
         fetch-depth: 0
         ref: ${{ github.head_ref || github.ref_name }}
 
@@ -62,20 +56,53 @@ jobs:
         poetry run flake8 -v . --count --show-source --statistics
         poetry run pytest -v # --cov
 
-    # - name: Upload coverage reports to Codecov
-    #   uses: codecov/codecov-action@v5
-    #   with:
-    #     token: ${{ secrets.CODECOV_TOKEN }}
-    #     verbose: true
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        verbose: true
 
     - name: Create Release
       env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
-        GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
-        if [ -d dist ] && [ "$(ls -A dist)" ]; then
-          poetry publish --no-interaction
-        else
-          echo "No build artifacts to publish."
-        fi
+        poetry run semantic-release --verbose version
+        poetry run semantic-release --verbose publish
+
+      # if [ -d dist ] && [ "$(ls -A dist)" ]; then
+      #   poetry publish --no-interaction
+      # else
+      #   echo "No build artifacts to publish."
+      # fi
+
+    # - name: Build package
+    #   run: |
+    #     poetry build
+
+    - name: Store the distribution packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenwriter-distributions
+        path: dist/
+
+  publish-to-pypi:
+    name: >-
+      Publish Python distribution to PyPI
+    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    needs:
+    - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/screenwriter
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: screenwriter-distributions
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
