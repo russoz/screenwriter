@@ -63,11 +63,9 @@ jobs:
         verbose: true
 
     - name: Create Release
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        poetry run semantic-release --verbose version
-        poetry run semantic-release --verbose publish
+        GH_TOKEN=${{ secrets.GITHUB_TOKEN }} poetry run semantic-release --verbose version
+        GH_TOKEN=${{ secrets.GITHUB_TOKEN }} poetry run semantic-release --verbose publish
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
       with:
