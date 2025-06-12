@@ -66,7 +66,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variables = [
-    "screenwriter/__init__.py:__version__",
+    "src/screenwriter/__init__.py:__version__",
 ]
 version_toml = [
     "pyproject.toml:tool.poetry.version"
@@ -75,10 +75,9 @@ branch = "main"
 changelog = { file = "CHANGELOG.md", mode = "init" }
 build_command = "poetry build"
 dist_path = "dist/"
-upload_to_pypi = true
 upload_to_release = true
 commit_parser = "conventional"
-major_on_zero = true
+major_on_zero = false
 tag_format = "v{version}"
 parse_version_from_tag = true
 version_pattern = "v(?P<version>\\d+\\.\\d+\\.\\d+)"

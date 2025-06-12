@@ -68,17 +68,6 @@ jobs:
       run: |
         poetry run semantic-release --verbose version
         poetry run semantic-release --verbose publish
-
-      # if [ -d dist ] && [ "$(ls -A dist)" ]; then
-      #   poetry publish --no-interaction
-      # else
-      #   echo "No build artifacts to publish."
-      # fi
-
-    # - name: Build package
-    #   run: |
-    #     poetry build
-
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
       with:
