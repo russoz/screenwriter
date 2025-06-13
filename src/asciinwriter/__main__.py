@@ -16,7 +16,7 @@ import pexpect
 from . import __version__
 
 
-class ScreenwriterRunner:
+class AsciinwriterRunner:
     """Handles automation of terminal sessions with configurable parameters."""
 
     VALID_COMMANDS = ["SEND", "EXPECT", "ENTER", "DELAY"]
@@ -131,7 +131,7 @@ class ScreenwriterRunner:
 def main():
     parser = argparse.ArgumentParser(
         description="Script and automate interactive terminal sessions for generating asciinema .cast files",
-        prog="screenwriter",
+        prog="asciinwriter",
     )
     parser.add_argument(
         "--version", action="version", version=f"%(prog)s {__version__}"
@@ -152,7 +152,7 @@ def main():
         )
 
     # Create runner with default configuration
-    runner = ScreenwriterRunner()
+    runner = AsciinwriterRunner()
     runner.process_file(input_file)
 
 

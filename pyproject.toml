@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "screenwriter"
+name = "asciinwriter"
 version = "0.1.0"
 description = "Script and automate interactive terminal sessions for generating asciinema .cast files and reproducible demos."
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-homepage = "https://github.com/russoz/screenwriter"
-repository = "https://github.com/russoz/screenwriter"
+homepage = "https://github.com/russoz/asciinwriter"
+repository = "https://github.com/russoz/asciinwriter"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -27,16 +27,14 @@ classifiers = [
 ]
 keywords = [ "asciinema", "cast", "terminal", "automation", "demo", "gif", "documentation" ]
 packages = [
-    { include = "screenwriter", from = "src" }
+    { include = "asciinwriter", from = "src" }
 ]
 
 [tool.poetry.scripts]
-screenwriter = "screenwriter.__main__:main"
+asciinwriter = "asciinwriter.__main__:main"
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/russoz/screenwriter/issues"
-"Source Code" = "https://github.com/russoz/screenwriter"
-"Documentation" = "https://screenwriter.readthedocs.io/en/latest/index.html"
+"Bug Tracker" = "https://github.com/russoz/asciinwriter/issues"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -66,7 +64,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variables = [
-    "src/screenwriter/__init__.py:__version__",
+    "src/asciinwriter/__init__.py:__version__",
 ]
 version_toml = [
     "pyproject.toml:tool.poetry.version"
@@ -88,4 +86,4 @@ upload_to_vcs_release = true
 
 [tool.semantic_release.remote]
 type = "github"
-repository = "russoz/screenwriter"
+repository = "russoz/asciinwriter"

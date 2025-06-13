@@ -71,7 +71,7 @@ jobs:
     - name: Store the distribution packages
       uses: actions/upload-artifact@v4
       with:
-        name: screenwriter-distributions
+        name: asciinwriter-distributions
         path: dist/
 
   publish-to-pypi:
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/screenwriter
+      url: https://pypi.org/p/asciinwriter
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
@@ -91,7 +91,7 @@ jobs:
       - name: Download all the dists
         uses: actions/download-artifact@v4
         with:
-          name: screenwriter-distributions
+          name: asciinwriter-distributions
           path: dist/
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

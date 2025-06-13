@@ -6,13 +6,13 @@ import os
 
 import pytest
 
-from screenwriter.__main__ import main
-from screenwriter.__main__ import ScreenwriterRunner
+from asciinwriter.__main__ import AsciinwriterRunner
+from asciinwriter.__main__ import main
 
 
 def test_main_with_version_argument(mocker):
     """Test that --version argument works."""
-    mocker.patch("sys.argv", ["screenwriter", "--version"])
+    mocker.patch("sys.argv", ["asciinwriter", "--version"])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 0
@@ -20,7 +20,7 @@ def test_main_with_version_argument(mocker):
 
 def test_main_with_help_argument(mocker):
     """Test that --help argument works."""
-    mocker.patch("sys.argv", ["screenwriter", "--help"])
+    mocker.patch("sys.argv", ["asciinwriter", "--help"])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 0
@@ -28,7 +28,7 @@ def test_main_with_help_argument(mocker):
 
 def test_main_without_input_file_fails(mocker):
     """Test that main fails when no input file is provided."""
-    mocker.patch("sys.argv", ["screenwriter"])
+    mocker.patch("sys.argv", ["asciinwriter"])
     mocker.patch.dict(os.environ, {}, clear=True)
     with pytest.raises(SystemExit) as exc_info:
         main()
@@ -40,9 +40,9 @@ def test_main_with_env_var_input_file(mocker, tmp_path):
     test_file = tmp_path / "test.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello)\n")
 
-    mocker.patch("sys.argv", ["screenwriter"])
+    mocker.patch("sys.argv", ["asciinwriter"])
     mocker.patch.dict(os.environ, {"SCENE_FILE": str(test_file)})
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
@@ -62,8 +62,8 @@ def test_main_with_positional_argument(mocker, tmp_path):
     test_file = tmp_path / "test.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello)\n")
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
@@ -82,11 +82,11 @@ def test_main_positional_arg_overrides_env_var(mocker, tmp_path):
     env_file = tmp_path / "env_file.scene"
     env_file.write_text("SEND(echo from_env)\nEXPECT(from_env)\n")
 
-    mocker.patch("sys.argv", ["screenwriter", str(arg_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(arg_file)])
     mocker.patch.dict(os.environ, {"SCENE_FILE": str(env_file)})
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_human_type = mocker.patch(
-        "screenwriter.__main__.ScreenwriterRunner.human_type"
+        "asciinwriter.__main__.AsciinwriterRunner.human_type"
     )
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
@@ -100,7 +100,7 @@ def test_main_positional_arg_overrides_env_var(mocker, tmp_path):
 
 def test_main_file_not_found(mocker):
     """Test that main handles file not found error."""
-    mocker.patch("sys.argv", ["screenwriter", "nonexistent.scene"])
+    mocker.patch("sys.argv", ["asciinwriter", "nonexistent.scene"])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 1
@@ -111,7 +111,7 @@ def test_main_empty_file_exits_cleanly(mocker, tmp_path):
     test_file = tmp_path / "empty.scene"
     test_file.write_text("")  # Empty file
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     # Should complete successfully without raising SystemExit
     main()
 
@@ -121,7 +121,7 @@ def test_main_comments_only_file_exits_cleanly(mocker, tmp_path):
     test_file = tmp_path / "comments.scene"
     test_file.write_text("# This is a comment\n# Another comment\n")
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     # Should complete successfully without raising SystemExit
     main()
 
@@ -131,15 +131,15 @@ def test_main_processes_send_and_expect(mocker, tmp_path):
     test_file = tmp_path / "commands.scene"
     test_file.write_text("SEND(echo hello)\nEXPECT(hello world)\nSEND(ls)\n")
 
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_human_type = mocker.patch(
-        "screenwriter.__main__.ScreenwriterRunner.human_type"
+        "asciinwriter.__main__.AsciinwriterRunner.human_type"
     )
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     main()
 
     # Verify interactions
@@ -177,15 +177,15 @@ EXPECT(test)
 """
     )
 
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_human_type = mocker.patch(
-        "screenwriter.__main__.ScreenwriterRunner.human_type"
+        "asciinwriter.__main__.AsciinwriterRunner.human_type"
     )
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     main()
 
     # Should only process the SEND and EXPECT commands, not comments
@@ -202,12 +202,12 @@ def test_main_enter_command(mocker, tmp_path):
     test_file = tmp_path / "enter.scene"
     test_file.write_text("SEND(echo hello)\nENTER(2)\nSEND(ls)\n")
 
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     main()
 
     # Should have called send with \r twice for ENTER(2)
@@ -224,13 +224,13 @@ def test_main_delay_command(mocker, tmp_path):
     test_file = tmp_path / "delay.scene"
     test_file.write_text("SEND(echo hello)\nDELAY(0.5)\nSEND(ls)\n")
 
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_sleep = mocker.patch("time.sleep")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     main()
 
     # Should have called time.sleep with 0.5
@@ -242,7 +242,7 @@ def test_main_enter_invalid_parameter(mocker, tmp_path):
     test_file = tmp_path / "invalid_enter.scene"
     test_file.write_text("ENTER(not_a_number)\n")
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 1
@@ -253,7 +253,7 @@ def test_main_delay_invalid_parameter(mocker, tmp_path):
     test_file = tmp_path / "invalid_delay.scene"
     test_file.write_text("DELAY(not_a_number)\n")
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     with pytest.raises(SystemExit) as exc_info:
         main()
     assert exc_info.value.code == 1
@@ -264,12 +264,12 @@ def test_main_enter_optional_parameter(mocker, tmp_path):
     test_file = tmp_path / "enter_optional.scene"
     test_file.write_text("SEND(echo hello)\nENTER()\nSEND(ls)\n")
 
-    mock_spawn = mocker.patch("screenwriter.__main__.pexpect.spawn")
+    mock_spawn = mocker.patch("asciinwriter.__main__.pexpect.spawn")
     mock_child = mocker.Mock()
     mock_spawn.return_value = mock_child
     mock_child.expect.return_value = None
 
-    mocker.patch("sys.argv", ["screenwriter", str(test_file)])
+    mocker.patch("sys.argv", ["asciinwriter", str(test_file)])
     main()
 
     # Should have called send with \r once for ENTER() (default 1)
@@ -279,10 +279,10 @@ def test_main_enter_optional_parameter(mocker, tmp_path):
     assert len(enter_calls) == 1
 
 
-def test_screenwriter_runner_enter_optional(mocker):
-    """Test that ScreenwriterRunner processes ENTER() with optional parameter correctly."""
+def test_asciinwriter_runner_enter_optional(mocker):
+    """Test that AsciinwriterRunner processes ENTER() with optional parameter correctly."""
     mock_child = mocker.Mock()
-    runner = ScreenwriterRunner()
+    runner = AsciinwriterRunner()
 
     # Test ENTER() with no parameter (should default to 1)
     runner.process_line(mock_child, "ENTER()")

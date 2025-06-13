@@ -2,15 +2,15 @@
 # Licensed under the GPL-3.0-or-later license. See LICENSES/GPL-3.0-or-later.txt for details.
 # SPDX-FileCopyrightText: 2025 Alexei Znamensky
 # SPDX-License-Identifier: GPL-3.0-or-later
-from screenwriter.__main__ import ScreenwriterRunner
+from asciinwriter.__main__ import AsciinwriterRunner
 
 
 def test_human_type_sends_characters(mocker):
     """Test that human_type sends each character with delays."""
-    runner = ScreenwriterRunner(
+    runner = AsciinwriterRunner(
         typing_delay_range=(0.05, 0.05), jitter_factor=0, post_typing_delay=0.1
     )
-    mock_sleep = mocker.patch("screenwriter.__main__.time.sleep")
+    mock_sleep = mocker.patch("asciinwriter.__main__.time.sleep")
     mock_child = mocker.Mock()
 
     runner.human_type(mock_child, "hello")
@@ -29,10 +29,10 @@ def test_human_type_sends_characters(mocker):
 
 def test_human_type_prints_output(mocker):
     """Test that human_type prints characters to stdout."""
-    runner = ScreenwriterRunner(
+    runner = AsciinwriterRunner(
         typing_delay_range=(0.05, 0.05), jitter_factor=0, post_typing_delay=0.1
     )
-    mocker.patch("screenwriter.__main__.time.sleep")
+    mocker.patch("asciinwriter.__main__.time.sleep")
     mock_print = mocker.patch("builtins.print")
     mock_child = mocker.Mock()
 

@@ -21,13 +21,13 @@ def asciinema_preexec(pytestconfig):
 
 
 def test_session(tmp_path, asciinema_preexec):
-    """Test that asciinema can record a screenwriter session and produce a valid .cast file."""
+    """Test that asciinema can record a asciinwriter session and produce a valid .cast file."""
     # Create a simple script file
     script_file = tmp_path / "test_script.scene"
     script_file.write_text(
-        "SEND(echo 'Hello from screenwriter!')\n"
+        "SEND(echo 'Hello from asciinwriter!')\n"
         "ENTER()\n"
-        "EXPECT(Hello from screenwriter!)\n"
+        "EXPECT(Hello from asciinwriter!)\n"
         "SEND(date)\n"
         "ENTER()\n"
         "SEND(echo 'Test complete')\n"
@@ -38,13 +38,13 @@ def test_session(tmp_path, asciinema_preexec):
     # Create output file for asciinema
     cast_file = tmp_path / "recording.cast"
 
-    # Run asciinema to record screenwriter session
+    # Run asciinema to record asciinwriter session
     cmd = [
         "asciinema",
         "rec",
         str(cast_file),
         "--command",
-        f"screenwriter {script_file}",
+        f"asciinwriter {script_file}",
         "--overwrite",
     ]
 
@@ -98,12 +98,12 @@ def test_session(tmp_path, asciinema_preexec):
     # Check that expected output appears in the recording
     full_output = "".join(output_events)
     assert (
-        "Hello from screenwriter!" in full_output
+        "Hello from asciinwriter!" in full_output
     ), "Expected output not found in recording"
 
 
 def test_playback(tmp_path, asciinema_preexec):
-    """Test that asciinema can play back a recording created with screenwriter."""
+    """Test that asciinema can play back a recording created with asciinwriter."""
     # Create a simple script
     script_file = tmp_path / "playback_test.scene"
     script_file.write_text(
@@ -122,7 +122,7 @@ def test_playback(tmp_path, asciinema_preexec):
         "rec",
         str(cast_file),
         "--command",
-        f"screenwriter {script_file}",
+        f"asciinwriter {script_file}",
         "--overwrite",
     ]
 
@@ -157,7 +157,7 @@ def test_playback(tmp_path, asciinema_preexec):
 
 
 def test_env_var(tmp_path, asciinema_preexec):
-    """Test screenwriter integration using SCENE_FILE environment variable with asciinema."""
+    """Test asciinwriter integration using SCENE_FILE environment variable with asciinema."""
     # Create script file
     script_file = tmp_path / "env_test.scene"
     script_file.write_text(
@@ -168,14 +168,14 @@ def test_env_var(tmp_path, asciinema_preexec):
 
     cast_file = tmp_path / "env_test.cast"
 
-    # Run asciinema with screenwriter using environment variable
+    # Run asciinema with asciinwriter using environment variable
     cmd = [
         "asciinema",
         "rec",
         str(cast_file),
         "--overwrite",
         "--command",
-        "screenwriter",
+        "asciinwriter",
     ]
 
     env = os.environ.copy()
@@ -210,7 +210,7 @@ def test_env_var(tmp_path, asciinema_preexec):
 
 
 def test_complex(tmp_path, asciinema_preexec):
-    """Test a more complex screenwriter session with multiple commands and expects."""
+    """Test a more complex asciinwriter session with multiple commands and expects."""
     script_file = tmp_path / "complex_test.scene"
     script_file.write_text(
         "# Complex test script\n"
@@ -239,9 +239,9 @@ def test_complex(tmp_path, asciinema_preexec):
         str(cast_file),
         "--overwrite",
         "--title",
-        "Complex Screenwriter Test",
+        "Complex Asciinwriter Test",
         "--command",
-        f"screenwriter {script_file}",
+        f"asciinwriter {script_file}",
     ]
 
     result = subprocess.run(
@@ -261,7 +261,7 @@ def test_complex(tmp_path, asciinema_preexec):
 
     # Check header
     header = json.loads(lines[0])
-    assert header.get("title") == "Complex Screenwriter Test"
+    assert header.get("title") == "Complex Asciinwriter Test"
 
     # Count meaningful events (output events with actual content)
     output_events = []

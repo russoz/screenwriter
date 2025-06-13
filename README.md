@@ -1,6 +1,6 @@
-# Screenwriter
+# Asciinwriter
 
-Screenwriter is a CLI tool for scripting and automating interactive terminal sessions, primarily designed to generate [asciinema](https://asciinema.org/) `.cast` files for demos, documentation, and automated testing. It simulates human-like typing and command execution, making it ideal for producing realistic terminal recordings and GIFs.
+Asciinwriter is a CLI tool for scripting and automating interactive terminal sessions, primarily designed to generate [asciinema](https://asciinema.org/) `.cast` files for demos, documentation, and automated testing. It simulates human-like typing and command execution, making it ideal for producing realistic terminal recordings and GIFs.
 
 ## Purpose
 
@@ -14,38 +14,41 @@ Screenwriter is a CLI tool for scripting and automating interactive terminal ses
 Install dependencies (requires Python 3.11+):
 
 ```sh
-poetry install
+pipx install asciinwriter
 ```
 
-Prepare a script file (e.g., `demo.pexp`):
+Prepare a script file (e.g., `demo.scene`):
 
 ```
 SEND(echo Hello, world!)
+ENTER()
 EXPECT(Hello, world!)
 ```
 
 Run the script and record a cast:
 
 ```sh
-export PEXP_FILE=demo.pexp
-asciinema rec demo.cast -c "poetry run screenwriter"
+export SCENE_FILE=demo.scene
+asciinema rec demo.cast -c asciinwriter
 ```
 
 You can then convert the `.cast` to a GIF using [agg](https://github.com/asciinema/agg) or similar tools.
 
 ## Usage
 
-Screenwriter reads commands from a file specified by the `PEXP_FILE` environment variable. The file should contain lines like:
+Asciinwriter reads commands from a scene file specified by the `SCENE_FILE` environment variable. The file should contain lines like:
 
-- `SEND(...)` sends a command to the shell.
+- `SEND(...)` sends text to the shell.
+- `ENTER()` sends the Enter key to the shell.
 - `EXPECT(...)` waits for the given output.
+- `DELAY(...)` pause the typing for a specified period.
 
 ## Development
 
-- Source code: [`src/screenwriter`](src/screenwriter)
+- Source code: [`src/asciinwriter`](src/asciinwriter)
 - Tests: [`tests/`](tests/)
 - Build: `poetry build`
-- Lint: `poetry run flake8 src/screenwriter`
+- Lint: `poetry run flake8 src/asciinwriter`
 
 ## License
 

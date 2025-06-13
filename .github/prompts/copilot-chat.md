@@ -3,9 +3,9 @@
 # SPDX-FileCopyrightText: 2025 Alexei Znamensky
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# GitHub Copilot Chat Prompt for Screenwriter
+# GitHub Copilot Chat Prompt for Asciinwriter
 
-This prompt configures the AI assistant's expertise and behavior for the Screenwriter project.
+This prompt configures the AI assistant's expertise and behavior for the Asciinwriter project.
 
 ## Core Expertise
 
@@ -51,4 +51,4 @@ Always:
 
 ## Project Context
 
-This is for the Screenwriter project - a CLI tool for automating terminal sessions and creating asciinema recordings.
+This is for the Asciinwriter project - a CLI tool for automating terminal sessions and creating asciinema recordings.

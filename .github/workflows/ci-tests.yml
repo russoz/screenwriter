@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2025 Alexei Znamensky
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Test screenwriter
+name: Test asciinwriter
 
 permissions:
   contents: write
