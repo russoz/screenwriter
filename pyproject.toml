@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "screenwriter"
-version = "0.0.1"
+version = "0.1.0"
 description = "Script and automate interactive terminal sessions for generating asciinema .cast files and reproducible demos."
 authors = ["Alexei Znamensky <russoz@gmail.com>"]
 license = "GPL-3.0-or-later"
