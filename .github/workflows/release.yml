@@ -78,20 +78,34 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose version
-          GH_TOKEN=${{ github.token }} poetry run semantic-release --verbose publish
+          poetry run semantic-release --verbose version
+          poetry run semantic-release --verbose publish
+
+      - name: Check if dist folder has content
+        id: check_dist
+        run: |
+          if [ -d dist ] && [ "$(ls -A dist)" ]; then
+            echo "has_content=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_content=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Store the distribution packages
         uses: actions/upload-artifact@v4
+        if: ${{ steps.check_dist.outputs.has_content == 'true' }}
         with:
           name: asciinwriter-distributions
           path: dist/
+    outputs:
+      has_content: ${{ steps.check_dist.outputs.has_content }}
 
   publish-to-pypi:
-    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
     needs:
       - build
+    if: ${{ needs.build.outputs.has_content == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -102,8 +116,10 @@ jobs:
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: asciinwriter-distributions
           path: dist/
       - name: Publish distribution 📦 to PyPI
+        if: ${{ hashFiles('dist/*.tar.gz', 'dist/*.whl') }}
         uses: pypa/gh-action-pypi-publish@release/v1
