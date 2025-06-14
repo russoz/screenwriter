@@ -22,8 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Utilities",
     "Topic :: Terminals",
-    "Topic :: Software Development :: Documentation",
-    "Topic :: Software Development :: Testing Tools"
+    "Topic :: Software Development :: Documentation"
 ]
 keywords = [ "asciinema", "cast", "terminal", "automation", "demo", "gif", "documentation" ]
 packages = [
