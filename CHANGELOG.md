@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.2.2 (2025-06-14)
+
+### Bug Fixes
+
+- Remove invalid project classifier
+  ([`8aab90d`](https://github.com/russoz/asciinwriter/commit/8aab90db906be9ba58eac480fa77679fc85b8ec6))
+
+
 ## v0.2.1 (2025-06-14)
 
 ### Bug Fixes
