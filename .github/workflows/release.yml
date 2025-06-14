@@ -3,14 +3,14 @@
 # SPDX-FileCopyrightText: 2025 Alexei Znamensky
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Semantic Release
+name: Release
 
 permissions: {}  # remove top-level permissions
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   test:
@@ -77,7 +77,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create Release
+      - name: Create Semantic Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -116,10 +116,8 @@ jobs:
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
-        continue-on-error: true
         with:
           name: asciinwriter-distributions
           path: dist/
       - name: Publish distribution 📦 to PyPI
-        if: ${{ hashFiles('dist/*.tar.gz', 'dist/*.whl') }}
         uses: pypa/gh-action-pypi-publish@release/v1
