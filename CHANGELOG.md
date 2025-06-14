@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.2.1 (2025-06-14)
+
+### Bug Fixes
+
+- Force patch release
+  ([`2c49997`](https://github.com/russoz/asciinwriter/commit/2c49997f96e93782b966551d610cd664cfeb6dfd))
+
+### Refactoring
+
+- Adjust release workflow
+  ([`b0b8bb5`](https://github.com/russoz/asciinwriter/commit/b0b8bb5a9d2e8b56e02646b47d4e38ff89922154))
+
+
 ## v0.2.0 (2025-06-14)
 
 ### Chores
